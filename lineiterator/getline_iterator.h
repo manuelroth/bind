@@ -6,15 +6,19 @@
 #include <sstream>
 
 struct line_iterator:std::iterator<std::input_iterator_tag, std::string>{
-	line_iterator();
-	line_iterator(std::istream &input):in(input){}
+	//line_iterator();
+	line_iterator(std::istream &input=dummy):in(input){
+		++(*this);
+	}
 	value_type operator *();
-	line_iterator& operator++(){
+
+	line_iterator& operator++() {
+		std::getline(in, value);
 		return *this;
 	}
 
-	line_iterator operator++(int){
-		line_iterator old{*this};
+	line_iterator operator++(int) {
+		line_iterator old { *this };
 		++(*this);
 		return old;
 	}
@@ -24,8 +28,9 @@ struct line_iterator:std::iterator<std::input_iterator_tag, std::string>{
 		return !(*this == other);
 	}
 	private:
-	std::istream &in;
-	static std::istringstream dummy;
+		std::istream &in;
+		static std::istringstream dummy;
+		value_type value {};
 };
 
 #endif
