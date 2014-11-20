@@ -7,7 +7,7 @@
 
 struct line_iterator:std::iterator<std::input_iterator_tag, std::string>{
 	line_iterator();
-	line_iterator(std::istream &input=dummy):in(input){}
+	line_iterator(std::istream &input):in(input){}
 	value_type operator *();
 	line_iterator& operator++(){
 		return *this;
