@@ -32,7 +32,7 @@ void testModulo() {
 
 void testSquareRoot() {
 	auto squareFunc = std::bind(std::multiplies<double> { }, _1, _1);
-	auto sqrtFunc = [](double x) { return std::sqrt(x); };
+	auto sqrtFunc = [](double x) {return std::sqrt(x);};
 	auto boundSqrtFunc = std::bind(sqrtFunc, squareFunc);
 
 	double x { 2 };
@@ -42,7 +42,7 @@ void testSquareRoot() {
 }
 
 void testQuadraticEquation() {
-	auto sqrtFunc = [](double x) { return std::sqrt(x); };
+	auto sqrtFunc = [](double x) {return std::sqrt(x);};
 	// (x/2)
 	auto divideFunc = std::bind(std::divides<double> { }, _1, 2.0);
 	// ((x/2)+(x/2))
@@ -62,7 +62,6 @@ void testQuadraticEquation() {
 
 void runAllTests(int argc, char const *argv[]) {
 	cute::suite s { };
-	//TODO add your test here
 	s.push_back(CUTE(testSumFunctor));
 	s.push_back(CUTE(testTerm));
 	s.push_back(CUTE(testModulo));

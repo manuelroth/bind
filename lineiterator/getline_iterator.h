@@ -2,12 +2,11 @@
 #define GETLINE_ITERATOR_H_
 
 #include <iterator>
-#include <string>
 #include <sstream>
 
-struct line_iterator:std::iterator<std::input_iterator_tag, std::string>{
-	//line_iterator();
-	line_iterator(std::istream &input=dummy):in(input){
+struct line_iterator: std::iterator<std::input_iterator_tag, std::string> {
+	line_iterator(std::istream &input = dummy) :
+			in(input) {
 		++(*this);
 	}
 
@@ -15,7 +14,7 @@ struct line_iterator:std::iterator<std::input_iterator_tag, std::string>{
 
 	line_iterator& operator++() {
 		std::getline(in, value);
-		if(value.size() && in.eof()) {
+		if (value.size() && in.eof()) {
 			in.clear();
 		}
 		return *this;
@@ -32,10 +31,10 @@ struct line_iterator:std::iterator<std::input_iterator_tag, std::string>{
 		return !(*this == other);
 	}
 
-	private:
-		std::istream &in;
-		static std::istringstream dummy;
-		value_type value {};
+private:
+	std::istream &in;
+	static std::istringstream dummy;
+	value_type value { };
 };
 
 #endif
