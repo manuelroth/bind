@@ -3,7 +3,6 @@
 #include "xml_listener.h"
 #include "cute_runner.h"
 #include <functional>
-#include <math.h>
 
 using namespace std::placeholders;
 
@@ -33,7 +32,9 @@ void testModulo() {
 
 void testSquareRoot() {
 	auto squareFunc = std::bind(std::multiplies<double> { }, _1, _1);
-	auto squareRootFunc = std::bind(sqrt, squareFunc);
+	auto sqrtFunc = [](double x) { return std::sqrt(x); };
+	auto boundSqrtFunc = std::bind(sqrtFunc, squareFunc);
+
 	auto combinedFunc = std::bind(squareRootFunc, squareFunc);
 
 	double x { 2 };
@@ -43,6 +44,7 @@ void testSquareRoot() {
 }
 
 void testQuadraticEquation() {
+	auto sqrtFunc = [](double x) { return std::sqrt(x); };
 	// (x/2)
 	auto divideFunc = std::bind(std::divides<double> { }, _1, 2.0);
 	// ((x/2)+(x/2))
@@ -50,14 +52,12 @@ void testQuadraticEquation() {
 	// ((x/2)+(x/2)) - y
 	auto subtractFunc = std::bind(std::minus<double> { }, squareFunc, _2);
 	// sqrt( (x/2)*(x/2) - y )
-
-	//TODO ALARMALARMALARM use std::sqrt
-	auto squareRootFunc = std::bind(sqrt, subtractFunc);
+	auto squareRootFunc = std::bind(sqrtFunc, subtractFunc);
 	// -(x/2)+sqrt( (x/2)*(x/2) - y )
 	auto pqFormulaFunc = std::bind(std::minus<double> { }, squareRootFunc, divideFunc);
 
 	const double x { 4 }, y { 1 };
-	double expected { -(x / 2) + sqrt((x / 2) * (x / 2) - y) };
+	double expected { -(x / 2) + std::sqrt((x / 2) * (x / 2) - y) };
 	double result = pqFormulaFunc(x, y);
 	ASSERT_EQUAL(expected, result);
 }

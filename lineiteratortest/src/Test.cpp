@@ -4,7 +4,7 @@
 #include "xml_listener.h"
 #include "cute_runner.h"
 
-void testFoo() {
+void testIncrementSetsNextValue() {
 	std::istringstream lineStream { "Line 1\nLine 2" };
 	auto it = line_iterator (lineStream);
 	it++;
@@ -25,6 +25,14 @@ void testPostfix() {
 	ASSERT_EQUAL("Line 2", *it);
 }
 
+void testStreamEndsEvenWithNewlineAtEnd() {
+	std::istringstream lineStream { "Line 1\nLine 2\n" };
+	auto it = line_iterator (lineStream);
+	it++;
+	it++;
+	ASSERT_EQUAL(it, line_iterator { });
+}
+
 void testPrefix() {
 	std::istringstream lineStream { "Line 1\nLine 2" };
 	auto it = line_iterator (lineStream);
@@ -38,10 +46,12 @@ void testStreamIsAtEnd() {
 	line_iterator end { };
 	it++;
 	it++;
-	ASSERT(it != end);
+	ASSERT_NOT_EQUAL_TO(it, end);
+	it++;
+	ASSERT_EQUAL(it, end);
 }
 
-void testIterateOverLines() {
+void testIterateOverLinesWithLoop() {
 	std::istringstream lineStream { "A long first line\nShorter second line\nLast line" };
 	auto lines = std::vector<std::string> { };
 	auto expected = std::vector<std::string> { "A long first line", "Shorter second line", "Last line" };
@@ -66,13 +76,14 @@ void testIterateOverLinesWithVectorCtor() {
 void runAllTests(int argc, char const *argv[]){
 	cute::suite s{};
 	//TODO add your test here
-	s.push_back(CUTE(testIterateOverLines));
+	s.push_back(CUTE(testIterateOverLinesWithLoop));
 	s.push_back(CUTE(testPostfix));
 	s.push_back(CUTE(testPrefix));
-	s.push_back(CUTE(testFoo));
+	s.push_back(CUTE(testIncrementSetsNextValue));
 	s.push_back(CUTE(testConstructorReadsFirstLine));
 	s.push_back(CUTE(testIterateOverLinesWithVectorCtor));
 	s.push_back(CUTE(testStreamIsAtEnd));
+	s.push_back(CUTE(testStreamEndsEvenWithNewlineAtEnd));
 	//s.push_back(CUTE(testStream));
 	cute::xml_file_opener xmlfile(argc,argv);
 	cute::xml_listener<cute::ide_listener<> >  lis(xmlfile.out);
