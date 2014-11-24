@@ -10,10 +10,14 @@ struct line_iterator:std::iterator<std::input_iterator_tag, std::string>{
 	line_iterator(std::istream &input=dummy):in(input){
 		++(*this);
 	}
+
 	value_type operator *();
 
 	line_iterator& operator++() {
 		std::getline(in, value);
+		if(value.size() && in.eof()) {
+			in.clear();
+		}
 		return *this;
 	}
 
@@ -24,9 +28,10 @@ struct line_iterator:std::iterator<std::input_iterator_tag, std::string>{
 	}
 
 	bool operator ==(const line_iterator& other) const;
-	bool operator !=(line_iterator const &other) const{
+	bool operator !=(line_iterator const &other) const {
 		return !(*this == other);
 	}
+
 	private:
 		std::istream &in;
 		static std::istringstream dummy;

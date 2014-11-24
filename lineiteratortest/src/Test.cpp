@@ -8,7 +8,6 @@ void testFoo() {
 	std::istringstream lineStream { "Line 1\nLine 2" };
 	auto it = line_iterator (lineStream);
 	it++;
-	it++;
 	auto secondLine = *it;
 	ASSERT_EQUAL("Line 2", secondLine);
 }
@@ -33,7 +32,28 @@ void testPrefix() {
 	ASSERT_EQUAL("Line 2", *it);
 }
 
+void testStreamIsAtEnd() {
+	std::istringstream lineStream { "First\nSecond\nThird" };
+	auto it = line_iterator (lineStream);
+	line_iterator end { };
+	it++;
+	it++;
+	ASSERT(it != end);
+}
+
 void testIterateOverLines() {
+	std::istringstream lineStream { "A long first line\nShorter second line\nLast line" };
+	auto lines = std::vector<std::string> { };
+	auto expected = std::vector<std::string> { "A long first line", "Shorter second line", "Last line" };
+
+	for (auto it = line_iterator(lineStream); it != line_iterator { }; ++it) {
+		lines.push_back(*it);
+	}
+
+	ASSERT_EQUAL(expected, lines);
+}
+
+void testIterateOverLinesWithVectorCtor() {
 	std::istringstream lineStream { "A long first line\nShorter second line\nLast line" };
 
 	auto expected = std::vector<std::string> { "A long first line", "Shorter second line", "Last line" };
@@ -51,6 +71,8 @@ void runAllTests(int argc, char const *argv[]){
 	s.push_back(CUTE(testPrefix));
 	s.push_back(CUTE(testFoo));
 	s.push_back(CUTE(testConstructorReadsFirstLine));
+	s.push_back(CUTE(testIterateOverLinesWithVectorCtor));
+	s.push_back(CUTE(testStreamIsAtEnd));
 	//s.push_back(CUTE(testStream));
 	cute::xml_file_opener xmlfile(argc,argv);
 	cute::xml_listener<cute::ide_listener<> >  lis(xmlfile.out);

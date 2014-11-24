@@ -50,6 +50,8 @@ void testQuadraticEquation() {
 	// ((x/2)+(x/2)) - y
 	auto subtractFunc = std::bind(std::minus<double> { }, squareFunc, _2);
 	// sqrt( (x/2)*(x/2) - y )
+
+	//TODO ALARMALARMALARM use std::sqrt
 	auto squareRootFunc = std::bind(sqrt, subtractFunc);
 	// -(x/2)+sqrt( (x/2)*(x/2) - y )
 	auto pqFormulaFunc = std::bind(std::minus<double> { }, squareRootFunc, divideFunc);
