@@ -35,12 +35,10 @@ void testSquareRoot() {
 	auto sqrtFunc = [](double x) { return std::sqrt(x); };
 	auto boundSqrtFunc = std::bind(sqrtFunc, squareFunc);
 
-	auto combinedFunc = std::bind(squareRootFunc, squareFunc);
-
 	double x { 2 };
-	double expected { x * x };
+	double expected { std::sqrt(x * x) };
 
-	ASSERT_EQUAL(expected, combinedFunc(x));
+	ASSERT_EQUAL(expected, boundSqrtFunc(x));
 }
 
 void testQuadraticEquation() {
