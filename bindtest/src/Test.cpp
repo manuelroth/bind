@@ -32,17 +32,15 @@ void testModulo() {
 
 void testSquareRoot() {
 	auto squareFunc = std::bind(std::multiplies<double> { }, _1, _1);
-	auto sqrtFunc = [](double x) {return std::sqrt(x);};
-	auto boundSqrtFunc = std::bind(sqrtFunc, squareFunc);
+	auto sqrtFunc = std::bind(static_cast<double(*)(double)>(&std::sqrt), squareFunc);
 
 	double x { 2 };
 	double expected { std::sqrt(x * x) };
 
-	ASSERT_EQUAL(expected, boundSqrtFunc(x));
+	ASSERT_EQUAL(expected, sqrtFunc(x));
 }
 
 void testQuadraticEquation() {
-	auto sqrtFunc = [](double x) {return std::sqrt(x);};
 	// (x/2)
 	auto divideFunc = std::bind(std::divides<double> { }, _1, 2.0);
 	// ((x/2)+(x/2))
@@ -50,7 +48,7 @@ void testQuadraticEquation() {
 	// ((x/2)+(x/2)) - y
 	auto subtractFunc = std::bind(std::minus<double> { }, squareFunc, _2);
 	// sqrt( (x/2)*(x/2) - y )
-	auto squareRootFunc = std::bind(sqrtFunc, subtractFunc);
+	auto squareRootFunc = std::bind(static_cast<double(*)(double)>(&std::sqrt), subtractFunc);
 	// -(x/2)+sqrt( (x/2)*(x/2) - y )
 	auto pqFormulaFunc = std::bind(std::minus<double> { }, squareRootFunc, divideFunc);
 
